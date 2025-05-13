@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Website Perlindungan Radiasi</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f0f4f8; color: #333; margin: 0; padding: 0;">
+
+    <header style="background-color: #0077b6; padding: 20px 0; text-align: center; color: white;">
+        <h1>HITUNGPERISAIRAD.ID</h1>
+    </header>
+
+    <nav style="background-color: #48cae4; padding: 10px; text-align: center;">
+        <a href="/" style="margin: 0 10px; text-decoration: none; color: white; font-weight: bold;">Beranda</a>
+        <a href="/panduan" style="margin: 0 10px; text-decoration: none; color: white; font-weight: bold;">Panduan</a>
+        <a href="/pr" style="margin: 0 10px; text-decoration: none; color: white; font-weight: bold;">Perhitungan Radiasi</a>
+        <a href="/lokal" style="margin: 0 10px; text-decoration: none; color: white; font-weight: bold;">Perhitungan Lokal</a>
+    </nav>
+
+    <main style="padding: 20px; max-width: 800px; margin: auto; background-color: white; border-radius: 10px; margin-top: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+
+        <section>
+            <h2 style="color: #023e8a;">Pilih yang Ingin Dihitung:</h2>
+            <p>
+                <a href="primary/" style="color: #0077b6; font-weight: bold;">Primary Barrier</a> |
+                <a href="sec/" style="color: #0077b6; font-weight: bold;">Secondary Barriers</a>
+            </p>
+        </section>
+
+        <section style="margin-top: 20px;">
+            <h3 style="color: #023e8a;">Form Input Perhitungan</h3>
+
+            <label for="modaliti">Tipe Modalitas:</label><br>
+            <select id="modaliti" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+                <option>Pilih</option>
+                <option value="rad">Ruang Radiografi Umum</option>
+                <option value="radb">Ruang Radiografi Umum (Chest Bucky)</option>
+                <option value="cr">Chess Room</option>
+            </select>
+
+            <label for="u">Use Factor [U]:</label><br>
+            <select id="u" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+                <option>Pilih</option>
+                <option value="0.89">Lantai</option>
+                <option value="0.09">Dinding cross-table</option>
+                <option value="1">Chest Bucky</option>
+                <option value="0.02">Unspecified wall</option>
+            </select>
+
+            <label for="t">Tipe Hunian [T]:</label><br>
+            <select id="t" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+                <option>Pilih</option>
+                <option value="1">Ruang administrasi</option>
+                <option value="1">Laboratorium</option>
+                <option value="1">Apotek</option>
+                <option value="1">Area tesepsionis</option>
+                <option value="1">Ruang tunggu</option>
+                <option value="1">Area bermain anak (Indoor)</option>
+                <option value="1">Ruang rontgen yang berdekatan</option>
+                <option value="1">Area membaca films</option>
+                <option value="1">Ruang Perawat</option>
+                <option value="1">Ruang kontrol sinar-X</option>
+                <option value="0.5">Ruang pemeriksaan/perawatan pasien</option>
+                <option value="0.2">Koridor</option>
+                <option value="0.2">Ruang pasien</option>
+                <option value="0.2">Ruang tunggu kariyawan</option>
+                <option value="0.2">Ruang istirahat staf</option>
+                <option value="0.125">Pintu koridor</option>
+                <option value="0.05">Toilet publik</option>
+                <option value="0.05">Area penjual otomatis</option>
+                <option value="0.05">Ruang penyimpanan</option>
+                <option value="0.05">Ruang tunggu tanpa pengawasan</option>
+                <option value="0.025">Tangga</option>
+                <option value="0.025">Area luar pejalan kaki/kendaraan</option>
+                <option value="0.025">Lift tanpa pengawasan</option>
+                <option value="0.025">Loteng</option>
+            </select>
+
+            <label for="d">Jarak (m):</label><br>
+            <input id="d" style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
+
+            <label for="n">Jumlah pasien perminggu:</label><br>
+            <input id="n" style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
+
+            <label for="p">Target desain goal (mSv/perminggu):</label><br>
+            <input id="p" style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
+
+            <label for="bahan">Material:</label><br>
+            <select id="bahan" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+                <option>Pilih</option>
+                <option value="beton">Beton</option>
+                <option value="pb">Timbal</option>
+            </select>
+
+            <button onclick="calculate()" style="background-color: #00b4d8; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">HITUNG</button>
+
+            <div id="result" style="margin-top: 20px; font-weight: bold;"></div>
+            <div id="result1" style="margin-top: 5px;"></div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; margin-top: 30px; padding: 15px; background-color: #0077b6; color: white;">
+        Departemen Fisika Fakultas MIPA Universitas Indonesia, Depok, Jawa Barat 16424
+    </footer>
+
+    <script>
+        function calculate() {
+            var u = document.getElementById('u');
+            var us = parseFloat(u.options[u.selectedIndex].value);
+            var t = document.getElementById('t');
+            var ts = parseFloat(t.options[t.selectedIndex].value);
+            var p = parseFloat(document.getElementById('p').value);
+            var n = parseFloat(document.getElementById('n').value);
+            var d = parseFloat(document.getElementById('d').value);
+            var modaliti = document.getElementById('modaliti').value;
+            var bahan = document.getElementById('bahan').value;
+            var a, be, c, z;
+
+            if (modaliti === "cr") {
+                if (bahan === "pb") {
+                    a = 2.283; be = 10.74; c = 0.6370; z = 1.2;
+                } else {
+                    a = 0.03622; be = 0.07766; c = 0.5404; z = 1.2;
+                }
+            } else if (modaliti === "rad") {
+                if (bahan === "pb") {
+                    a = 2.651; be = 16.56; c = 0.4585; z = 5.2;
+                } else {
+                    a = 0.03994; be = 0.1448; c = 0.4231; z = 5.2;
+                }
+            } else if (modaliti === "radb") {
+                if (bahan === "pb") {
+                    a = 2.264; be = 13.08; c = 0.56; z = 2.3;
+                } else {
+                    a = 0.03552; be = 0.1177; c = 0.6007; z = 2.3;
+                }
+            }
+
+            var xe = (1 / (a * c)) * Math.log(((Math.pow(((n * us * ts * z) / (p * d * d)), c)) + (be / a)) / (1 + (be / a)));
+            var bbb = (p * d * d) / (z * ts * n * us);
+
+            if (bahan === "pb") {
+                document.getElementById('result').innerText = "Ketebalan perisai yang direkomendasikan: " + xe.toFixed(2) + " mm Timbal (Pb)";
+            } else {
+                document.getElementById('result').innerText = "Ketebalan perisai yang direkomendasikan: " + xe.toFixed(2) + " mm Beton";
+            }
+            document.getElementById('result1').innerText = "Besar Transmisi: " + bbb.toFixed(6);
+        }
+    </script>
+
+</body>
+</html>
